@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Werewolf.DataAccess.Repository.IRepository;
 using Werewolf.Models;
+using Werewolf.Utility;
 
 namespace Werewolf.Controllers
 {
     [Area("Game")]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
@@ -28,7 +30,25 @@ namespace Werewolf.Controllers
         [Authorize]
         public IActionResult FindGame()
         {
-            return View();
+            var games = _unitOfWork.Game.GetAll(c => c.Status == SD.Pending);
+
+            return View(games);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult AddGame(Game game)
+        {
+            if (ModelState.IsValid)
+            {
+                game.Turn = 0;
+                game.TurnStarted = DateTime.Now;
+                _unitOfWork.Game.Add(game);
+                _unitOfWork.Save();
+            }
+
+            return RedirectToAction(nameof(FindGame));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
