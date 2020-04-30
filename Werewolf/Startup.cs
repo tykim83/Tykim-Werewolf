@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Werewolf.DataAccess;
 using Werewolf.Models;
+using Werewolf.DataAccess.Repository.IRepository;
+using Werewolf.DataAccess.Repository;
 
 namespace Werewolf
 {
@@ -45,6 +47,8 @@ namespace Werewolf
                 options.Password.RequiredLength = 4;
                 options.Password.RequiredUniqueChars = 1;
             });
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Werewolf.Models;
@@ -24,7 +25,8 @@ namespace Werewolf.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        [Authorize]
+        public IActionResult FindGame()
         {
             return View();
         }

@@ -1,8 +1,18 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>No game started</p>
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Welcome to Werewolf</h1>
+        <p>Please <a class="align-self-center" asp-area="Identity" asp-page="/Account/Login">Login</a> to play the game.</p>
+    </div>
+}

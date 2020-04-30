@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Werewolf.Models;
 
 namespace Werewolf.DataAccess.Repository.IRepository
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IGameRepository : IRepository<Game>
     {
-        IGameRepository Game { get; }
-
-        void Save();
+        void Update(Game game);
     }
 }

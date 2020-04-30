@@ -12,7 +12,10 @@ namespace Werewolf.DataAccess.Repository
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
+            Game = new GameRepository(_db);
         }
+
+        public IGameRepository Game { get; private set; }
 
         public void Dispose()
         {
