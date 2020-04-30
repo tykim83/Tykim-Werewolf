@@ -9,6 +9,7 @@ using Werewolf.Models;
 
 namespace Werewolf.Controllers
 {
+    [Area("Game")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
