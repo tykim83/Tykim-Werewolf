@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Werewolf.Models.Game>
+﻿@model Werewolf.Models.ViewModel.FindGameViewModel
 
 @{
     ViewData["Title"] = "FindGame";
@@ -21,9 +21,36 @@
     </div>
 </div>
 @{
-    if (Model.Count() > 0)
+    if (Model.Game.Count() > 0)
     {
-        <p>List of Games</p>
+        <table class="table table-striped table-bordered">
+            <tr class="table-secondary">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Players
+                </th>
+                <th>
+                </th>
+            </tr>
+
+            @foreach (var item in Model.Game)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@Model.TotalRegisteredPlayersForGame[item.Id] / @item.PlayerCount</td>
+                    <td>
+
+                        @if (Model.AlreadyRegisteredGames != null && Model.AlreadyRegisteredGames.Contains(item.Id))
+                        {
+                            <p>Registered</p>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+
     }
     else
     {
@@ -41,7 +68,7 @@
     <script>
         $(document).ready(function () {
             $("#addGameForm").click(function () {
-                $("#addGameBtn").submit(); // Submit the form 
+                $("#addGameBtn").submit(); // Submit the form
             });
         });
     </script>

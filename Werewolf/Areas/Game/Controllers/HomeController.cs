@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Werewolf.DataAccess.Repository.IRepository;
 using Werewolf.Models;
+using Werewolf.Models.ViewModel;
 using Werewolf.Utility;
 
 namespace Werewolf.Controllers
@@ -30,9 +32,25 @@ namespace Werewolf.Controllers
         [Authorize]
         public IActionResult FindGame()
         {
-            var games = _unitOfWork.Game.GetAll(c => c.Status == SD.Pending);
+            FindGameViewModel findGameVM = new FindGameViewModel()
+            {
+                Game = _unitOfWork.Game.GetAll(c => c.Status == SD.Pending),
+                TotalRegisteredPlayersForGame = new Dictionary<int, int>(),
+                AlreadyRegisteredGames = new List<int>()
+            };
 
-            return View(games);
+            foreach (var game in findGameVM.Game)
+            {
+                findGameVM.TotalRegisteredPlayersForGame.Add(game.Id, _unitOfWork.GameUser.RegisteredPlayers(game.Id));
+            }
+
+            //Get current user Id
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            findGameVM.AlreadyRegisteredGames = _unitOfWork.GameUser.GameRegisteredPerUser(claims.Value);
+
+            return View(findGameVM);
         }
 
         [Authorize]

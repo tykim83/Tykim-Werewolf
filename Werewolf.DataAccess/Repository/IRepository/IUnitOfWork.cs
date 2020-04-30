@@ -7,6 +7,7 @@ namespace Werewolf.DataAccess.Repository.IRepository
     public interface IUnitOfWork : IDisposable
     {
         IGameRepository Game { get; }
+        IGameUserRepository GameUser { get; }
 
         void Save();
     }

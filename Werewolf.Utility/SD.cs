@@ -9,5 +9,10 @@ namespace Werewolf.Utility
         public const string Pending = "Pending";
         public const string Started = "Started";
         public const string Finished = "Finished";
+
+        public const string Werewolf = "Werewolf";
+        public const string Villager = "Villager";
+        public const string Doctor = "Doctor";
+        public const string Seer = "Seer";
     }
 }
