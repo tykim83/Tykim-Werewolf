@@ -74,5 +74,40 @@ namespace Werewolf.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        #region Api Calls
+
+        [HttpPost]
+        public IActionResult JoinGame(int gameId)
+        {
+            //Get current user Id
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            //Add user to game
+            GameUser gameUsetToAdd = new GameUser()
+            {
+                ApplicationUserId = userId,
+                GameId = gameId,
+                IsAlive = true
+            };
+
+            _unitOfWork.GameUser.Add(gameUsetToAdd);
+            _unitOfWork.Save();
+
+            //Populate View Model
+            FindGameTableRowViewModel findGameTableRowVM = new FindGameTableRowViewModel()
+            {
+                Game = _unitOfWork.Game.Get(gameId),
+                TotalRegisteredPlayersForGame = new Dictionary<int, int>(),
+                AlreadyRegisteredGames = _unitOfWork.GameUser.GameRegisteredPerUser(userId)
+            };
+
+            findGameTableRowVM.TotalRegisteredPlayersForGame.Add(gameId, _unitOfWork.GameUser.RegisteredPlayers(gameId));
+
+            return PartialView("_FindGameTableRowPartial", findGameTableRowVM);
+        }
+
+        #endregion Api Calls
     }
 }

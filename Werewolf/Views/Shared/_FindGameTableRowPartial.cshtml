@@ -1,0 +1,34 @@
+﻿@model Werewolf.Models.ViewModel.FindGameTableRowViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+    <td class="align-middle">@Model.Game.Name</td>
+    <td class="align-middle">@Model.TotalRegisteredPlayersForGame[Model.Game.Id] / @Model.Game.PlayerCount</td>
+    <td class="align-middle">
+
+        @if (Model.AlreadyRegisteredGames != null && Model.AlreadyRegisteredGames.Contains(Model.Game.Id))
+        {
+            //Remove Registration Button
+            <a onclick=Delete("/Game/Home/QuitGame/${data}") class='btn btn-sm btn-outline-danger form-control text-danger' style="cursor: pointer;">
+                <i class='fas fa-trash-alt'></i> Quit
+            </a>
+        }
+        else
+        {
+            //Registration Button
+            <a onclick=joinGame(@Model.Game.Id) class='btn btn-sm btn-outline-primary form-control text-primary' style="cursor: pointer;">
+                <i class='fas fa-trash-alt'></i> Join
+            </a>
+        }
+    </td>
+    <td class="align-middle">
+        @if (Model.TotalRegisteredPlayersForGame[Model.Game.Id] >= Model.Game.PlayerCount)
+        {
+            <span>Ready</span>
+        }
+        else
+        {
+            <span>Not Ready</span>
+        }
+    </td>

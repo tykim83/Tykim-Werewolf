@@ -8,12 +8,11 @@
 <br />
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-8  mb-3">
 
         <h4 class="text-primary">Games List</h4>
-        <br />
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mb-3">
 
         <button type="button" class="btn btn-outline-primary form-control" data-toggle="modal" data-target="#myModal">
             <i class="fas fa-plus"></i> &ensp; New Game
@@ -23,7 +22,7 @@
 @{
     if (Model.Game.Count() > 0)
     {
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered" id="gameListTable">
             <tr class="table-secondary">
                 <th>
                     Name
@@ -33,21 +32,22 @@
                 </th>
                 <th>
                 </th>
+                <th>
+                </th>
             </tr>
 
             @foreach (var item in Model.Game)
             {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@Model.TotalRegisteredPlayersForGame[item.Id] / @item.PlayerCount</td>
-                    <td>
-
-                        @if (Model.AlreadyRegisteredGames != null && Model.AlreadyRegisteredGames.Contains(item.Id))
+                <tr id="gameId-@item.Id">
+                    @{await Html.RenderPartialAsync("_FindGameTableRowPartial", new Werewolf.Models.ViewModel.FindGameTableRowViewModel()
                         {
-                            <p>Registered</p>
-                        }
-                    </td>
+                            Game = item,
+                            AlreadyRegisteredGames = Model.AlreadyRegisteredGames,
+                            TotalRegisteredPlayersForGame = Model.TotalRegisteredPlayersForGame
+                        });
+                    }
                 </tr>
+
             }
         </table>
 
@@ -71,5 +71,28 @@
                 $("#addGameBtn").submit(); // Submit the form
             });
         });
+
+        async function joinGame(id) {
+
+            //Get New Partial View
+            var partialView = await getItemPartial(id);
+
+            //Remove Children Inside the Row
+            $('#gameId-' + id).children().remove();
+
+            //Add the new Partial View
+            $('#gameId-' + id).append(partialView);
+
+            console.log(partialView);
+        };
+
+        function getItemPartial(id) {
+
+            var prova = $.ajax({
+                type: 'POST',
+                url: `/Game/Home/JoinGame?gameId=${id}`
+            });
+            return prova;
+        }
     </script>
 }
