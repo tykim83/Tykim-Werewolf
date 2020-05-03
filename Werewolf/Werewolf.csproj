@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Werewolf.DataAccess\Werewolf.DataAccess.csproj" />
+    <ProjectReference Include="..\Werewolf.GameLogic\Werewolf.GameLogic.csproj" />
     <ProjectReference Include="..\Werewolf.Models\Werewolf.Models.csproj" />
     <ProjectReference Include="..\Werewolf.Utility\Werewolf.Utility.csproj" />
   </ItemGroup>

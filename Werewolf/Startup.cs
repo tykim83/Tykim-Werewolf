@@ -16,6 +16,9 @@ using Werewolf.Models;
 using Werewolf.DataAccess.Repository.IRepository;
 using Werewolf.DataAccess.Repository;
 
+using Werewolf.GameLogic.Interfaces;
+using Werewolf.GameLogic;
+
 namespace Werewolf
 {
     public class Startup
@@ -49,6 +52,7 @@ namespace Werewolf
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPlayGame, PlayGame>();
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();

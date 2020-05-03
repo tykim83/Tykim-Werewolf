@@ -75,7 +75,7 @@
         async function joinGame(id) {
 
             //Get New Partial View
-            var partialView = await getItemPartial(id);
+            var partialView = await joinGameItemPartial(id);
 
             //Remove Children Inside the Row
             $('#gameId-' + id).children().remove();
@@ -83,14 +83,52 @@
             //Add the new Partial View
             $('#gameId-' + id).append(partialView);
 
-            console.log(partialView);
         };
 
-        function getItemPartial(id) {
+        function startGame(id) {
+            console.log(id);
+
+            //Remove Children Inside the Row
+            $('#gameId-' + id).remove();
+
+            //Start Game and redirect to Index
+            $.ajax({
+                type: 'POST',
+                url: `/Game/Home/StartGame?gameId=${id}`,
+                dataType: "json",
+                success: function (data) {
+                    window.location.href = data.redirecturl; 
+                    }
+            });
+
+        };
+
+        async function quitGame(id) {
+            //Get New Partial View
+            var partialView = await quitGameItemPartial(id);
+
+            //Remove Children Inside the Row
+            $('#gameId-' + id).children().remove();
+
+            //Add the new Partial View
+            $('#gameId-' + id).append(partialView);
+
+        };
+
+        function joinGameItemPartial(id) {
 
             var prova = $.ajax({
                 type: 'POST',
                 url: `/Game/Home/JoinGame?gameId=${id}`
+            });
+            return prova;
+        }
+
+        function quitGameItemPartial(id) {
+
+            var prova = $.ajax({
+                type: 'POST',
+                url: `/Game/Home/QuitGame?gameId=${id}`
             });
             return prova;
         }

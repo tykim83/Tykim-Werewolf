@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Werewolf.DataAccess.Repository.IRepository;
+using Werewolf.GameLogic.Interfaces;
 using Werewolf.Models;
 using Werewolf.Models.ViewModel;
 using Werewolf.Utility;
@@ -18,10 +19,12 @@ namespace Werewolf.Controllers
     public class HomeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPlayGame _playGame;
 
-        public HomeController(IUnitOfWork unitOfWork)
+        public HomeController(IUnitOfWork unitOfWork, IPlayGame playGame)
         {
             _unitOfWork = unitOfWork;
+            _playGame = playGame;
         }
 
         public IActionResult Index()
@@ -77,6 +80,14 @@ namespace Werewolf.Controllers
 
         #region Api Calls
 
+        public IActionResult StartGame(int gameId)
+        {
+            //Game Init
+            _playGame.GameInit(gameId);
+
+            return Json(new { redirecturl = "/Game/Home/Index" });
+        }
+
         [HttpPost]
         public IActionResult JoinGame(int gameId)
         {
@@ -93,6 +104,32 @@ namespace Werewolf.Controllers
             };
 
             _unitOfWork.GameUser.Add(gameUsetToAdd);
+            _unitOfWork.Save();
+
+            //Populate View Model
+            FindGameTableRowViewModel findGameTableRowVM = new FindGameTableRowViewModel()
+            {
+                Game = _unitOfWork.Game.Get(gameId),
+                TotalRegisteredPlayersForGame = new Dictionary<int, int>(),
+                AlreadyRegisteredGames = _unitOfWork.GameUser.GameRegisteredPerUser(userId)
+            };
+
+            findGameTableRowVM.TotalRegisteredPlayersForGame.Add(gameId, _unitOfWork.GameUser.RegisteredPlayers(gameId));
+
+            return PartialView("_FindGameTableRowPartial", findGameTableRowVM);
+        }
+
+        [HttpPost]
+        public IActionResult QuitGame(int gameId)
+        {
+            //Get current user Id
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            //Get GameUser from db
+            GameUser gameUsetFromDb = _unitOfWork.GameUser.GetFirstOrDefault(c => c.ApplicationUserId == userId && c.GameId == gameId);
+
+            _unitOfWork.GameUser.Remove(gameUsetFromDb);
             _unitOfWork.Save();
 
             //Populate View Model

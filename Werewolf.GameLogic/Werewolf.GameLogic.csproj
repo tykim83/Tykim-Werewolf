@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Werewolf.DataAccess\Werewolf.DataAccess.csproj" />
+    <ProjectReference Include="..\Werewolf.Utility\Werewolf.Utility.csproj" />
+  </ItemGroup>
+
+</Project>

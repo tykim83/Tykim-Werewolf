@@ -27,9 +27,29 @@ namespace Werewolf.DataAccess.Repository
             }
         }
 
+        public IEnumerable<string> ListRegisteredUserPerGame(int gameId)
+        {
+            var items = _db.GameUser.Where(c => c.GameId == gameId).ToList();
+
+            foreach (var item in items)
+            {
+                yield return item.ApplicationUserId;
+            }
+        }
+
         public int RegisteredPlayers(int gameId)
         {
             return _db.GameUser.Where(c => c.GameId == gameId).Count();
+        }
+
+        public void Update(GameUser gameUser)
+        {
+            var objFromDb = _db.GameUser.FirstOrDefault(c => c.ApplicationUserId == gameUser.ApplicationUserId && c.GameId == gameUser.GameId);
+
+            objFromDb.IsAlive = gameUser.IsAlive;
+            objFromDb.Role = gameUser.Role;
+
+            _db.SaveChanges();
         }
     }
 }

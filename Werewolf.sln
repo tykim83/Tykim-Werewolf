@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Werewolf", "Werewolf\Werewolf.csproj", "{CDA14939-0881-4014-84A2-C4E5879E1E9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Werewolf", "Werewolf\Werewolf.csproj", "{CDA14939-0881-4014-84A2-C4E5879E1E9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Werewolf.Models", "Werewolf.Models\Werewolf.Models.csproj", "{70207576-ACA3-400B-AADB-FA7C8DF9A0FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Werewolf.Models", "Werewolf.Models\Werewolf.Models.csproj", "{70207576-ACA3-400B-AADB-FA7C8DF9A0FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Werewolf.DataAccess", "Werewolf.DataAccess\Werewolf.DataAccess.csproj", "{7AC1BA74-652A-497B-8D92-2B1F81485F12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Werewolf.DataAccess", "Werewolf.DataAccess\Werewolf.DataAccess.csproj", "{7AC1BA74-652A-497B-8D92-2B1F81485F12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Werewolf.Utility", "Werewolf.Utility\Werewolf.Utility.csproj", "{D09AE17D-C9CF-46C4-A354-2D116E0A6167}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Werewolf.Utility", "Werewolf.Utility\Werewolf.Utility.csproj", "{D09AE17D-C9CF-46C4-A354-2D116E0A6167}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Werewolf.GameLogic", "Werewolf.GameLogic\Werewolf.GameLogic.csproj", "{73A3D458-96B0-4217-B3F8-F13328C54E81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D09AE17D-C9CF-46C4-A354-2D116E0A6167}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D09AE17D-C9CF-46C4-A354-2D116E0A6167}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D09AE17D-C9CF-46C4-A354-2D116E0A6167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73A3D458-96B0-4217-B3F8-F13328C54E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A3D458-96B0-4217-B3F8-F13328C54E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A3D458-96B0-4217-B3F8-F13328C54E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73A3D458-96B0-4217-B3F8-F13328C54E81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
