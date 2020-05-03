@@ -30,5 +30,7 @@
     <div class="card-body">
         <p class="lead text-muted">Status: <strong class="text-info">@(Model.Opponent.IsAlive == true ? "Alive" : "Dead")</strong></p>
         <p class="lead text-muted">Vote Received: <strong class="text-info">(0)</strong></p>
+        <p class="lead text-muted mb-1">Notes:</p>
+        <textarea class="form-control note-text" id="@Model.Opponent.ApplicationUserId" rows="2"></textarea>
     </div>
 </div>

@@ -14,10 +14,13 @@ namespace Werewolf.DataAccess.Repository
             _db = db;
             Game = new GameRepository(_db);
             GameUser = new GameUserRepository(_db);
+            ApplicationUser = new ApplicationUserRepository(_db);
         }
 
         public IGameRepository Game { get; private set; }
         public IGameUserRepository GameUser { get; private set; }
+
+        public IApplicationUserRepository ApplicationUser { get; private set; }
 
         public void Dispose()
         {

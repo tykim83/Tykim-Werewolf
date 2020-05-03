@@ -23,7 +23,7 @@ namespace Werewolf.Models
 
         [Required]
         [Display(Name = "Number of Players?")]
-        [Range(7, 14,
+        [Range(7, 16,
         ErrorMessage = "Value for {0} must be between {1} and {2}.")]
         public int PlayerCount { get; set; }
     }

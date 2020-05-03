@@ -10,5 +10,7 @@ namespace Werewolf.Models
     {
         [Required]
         public string Name { get; set; }
+
+        public virtual ICollection<GameUser> GameUsers { get; set; }
     }
 }
