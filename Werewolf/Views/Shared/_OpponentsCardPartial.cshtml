@@ -1,0 +1,34 @@
+﻿@model Werewolf.Models.ViewModel.OpponentCardViewModel;
+@using Werewolf.Utility;
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    string url;
+
+    if (Model.CharacterRole == SD.Werewolf && Model.Opponent.Role == SD.Werewolf)
+    {
+        url = "/img/" + Model.Opponent.Role + ".png";
+    }
+    else
+    {
+        url = "/img/Villager.png";
+    }
+
+}
+
+<div class="card my-3">
+    <div class="card-header">
+        <div class="card-title mb-0 text-center h4 text-primary">
+            @Model.Opponent.ApplicationUser.Name
+        </div>
+    </div>
+    <div class="d-flex">
+        <img src="@url" alt="" class="card-img img-fluid w-75 m-auto" />
+    </div>
+    <div class="card-body">
+        <p class="lead text-muted">Status: <strong class="text-info">@(Model.Opponent.IsAlive == true ? "Alive" : "Dead")</strong></p>
+        <p class="lead text-muted">Vote Received: <strong class="text-info">(0)</strong></p>
+    </div>
+</div>

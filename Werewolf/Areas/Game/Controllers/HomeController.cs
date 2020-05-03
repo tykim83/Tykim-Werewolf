@@ -75,7 +75,7 @@ namespace Werewolf.Controllers
         {
             if (ModelState.IsValid)
             {
-                game.Turn = 0;
+                game.Turn = SD.Night;
                 game.TurnStarted = DateTime.Now;
                 _unitOfWork.Game.Add(game);
                 _unitOfWork.Save();

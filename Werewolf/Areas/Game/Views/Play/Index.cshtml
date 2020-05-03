@@ -1,0 +1,27 @@
+﻿@model Werewolf.Models.ViewModel.PlayViewModel;
+@{
+    ViewData["Title"] = "Play";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <partial name="_CharacterCardPartial" model="@Model.Character" />
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+
+            @foreach (var oppenent in Model.Opponents)
+            {
+                OpponentCardViewModel OpponentCardVm = new OpponentCardViewModel()
+                {
+                    Opponent = oppenent,
+                    CharacterRole = Model.Character.Role
+                };
+                <div class="col-md-4">
+                    <partial name="_OpponentsCardPartial" model="@OpponentCardVm" />
+                </div>
+            }
+        </div>
+    </div>
+</div>

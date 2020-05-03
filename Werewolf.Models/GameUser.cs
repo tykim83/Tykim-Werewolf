@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace Werewolf.Models
         public int GameId { get; set; }
 
         [Column(Order = 1)]
-        [ForeignKey("User")]
+        [ForeignKey("ApplicationUser")]
         public string ApplicationUserId { get; set; }
 
         public virtual Game Game { get; set; }

@@ -5,7 +5,7 @@
 @{
     var url = "/img/" + Model.Role + ".png";
 }
-<div class="col-md-4 m-3" id="gameListTable">
+<div class="col-md-4 my-3" id="gameListTable">
     <div class="card">
         <div class="card-header">
             <div class="card-title mb-0 text-center h4 text-primary">
@@ -21,7 +21,7 @@
             <p class="lead text-muted">Turn: <strong class="text-info">@Model.Game.Turn</strong></p>
         </div>
         <div class="card-footer">
-            <a class="btn btn-outline-primary btn-block text-primary">Play</a>
+            <a asp-area="Game" asp-controller="Play" asp-action="Index" asp-route-gameId="@Model.GameId" class="btn btn-outline-primary btn-block text-primary">Play</a>
         </div>
     </div>
 </div>
