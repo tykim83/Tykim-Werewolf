@@ -29,6 +29,18 @@ namespace Werewolf.Controllers
 
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            //check if user is logged in
+            if (claims != null)
+            {
+                //Get list of Started and Finished games
+                var activeGames = _unitOfWork.GameUser.GetAll(filter: c => c.ApplicationUserId == claims.Value, includeProperties: "Game").Where(c => c.Game.Status == SD.Started || c.Game.Status == SD.Finished).ToList();
+
+                return View(activeGames);
+            }
+
             return View();
         }
 
@@ -80,6 +92,7 @@ namespace Werewolf.Controllers
 
         #region Api Calls
 
+        [HttpPost]
         public IActionResult StartGame(int gameId)
         {
             //Game Init
