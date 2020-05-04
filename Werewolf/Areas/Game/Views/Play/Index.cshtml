@@ -12,11 +12,54 @@
         <div class="row">
             <!--  VOTE SECTION  -->
             <div class="container d-flex">
-                <div class="h4 text-info">
+                <div class="h4 text-info mb-0 align-self-center">
                     The @Model.Character.Game.TurnType
                 </div>
-                <div class="ml-auto">
-                </div>
+
+                @if (Model.Character.Game.TurnType == SD.Night)
+                {
+                    //NIGHT
+                    if (Model.Character.Role == SD.Werewolf)
+                    {
+                        //WEREWOLF
+                        <div class="ml-auto h4 text-secondary align-self-center mb-0 text-right">
+                            Werewolve, pick someone to kill.
+                        </div>
+                        <div class="ml-auto">
+                            <select data-characterid="@Model.Character.ApplicationUserId" data-gameid="@Model.Character.GameId" name="@Model.VoteId" asp-items="Model.VoteList.ToSelectListItems(Model.VoteId)" class="form-control form-control-lg">
+                                <option selected value="  "> -- select an option -- </option>
+                            </select>
+                        </div>
+                    }
+                    else if (Model.Character.Role == SD.Doctor)
+                    {
+                        //DOCTOR
+                        <div class="ml-auto h4 text-secondary align-self-center mb-0 text-right">
+                            Doctor, who would you like to heal?
+                        </div>
+                        <div class="ml-auto">
+                            <select data-characterid="@Model.Character.ApplicationUserId" data-gameid="@Model.Character.GameId" name="@Model.VoteId" asp-items="Model.VoteList.ToSelectListItems(Model.VoteId)" class="form-control form-control-lg">
+                                <option selected value="  "> -- select an option -- </option>
+                            </select>
+                        </div>
+                    }
+                    else if (Model.Character.Role == SD.Seer)
+                    {
+                        //SEER
+                        <div class="ml-auto h4 text-secondary align-self-center mb-0 text-right">
+                            Seer, pick someone to ask about.
+                        </div>
+                        <div class="ml-auto">
+                            <select data-characterid="@Model.Character.ApplicationUserId" data-gameid="@Model.Character.GameId" name="@Model.VoteId" asp-items="Model.VoteList.ToSelectListItems(Model.VoteId)" class="form-control form-control-lg">
+                                <option selected value="  "> -- select an option -- </option>
+                            </select>
+                        </div>
+                    }
+                }
+                else
+                {
+                    //DAY
+                }
             </div>
         </div>
 

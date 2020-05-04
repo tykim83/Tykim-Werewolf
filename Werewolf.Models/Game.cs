@@ -27,5 +27,7 @@ namespace Werewolf.Models
         [Range(7, 16,
         ErrorMessage = "Value for {0} must be between {1} and {2}.")]
         public int PlayerCount { get; set; }
+
+        public virtual ICollection<Vote> Votes { get; set; }
     }
 }

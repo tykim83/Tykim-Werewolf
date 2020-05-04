@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20200503190442_prova.Designer.cs" />
     <Compile Remove="Migrations\20200504061304_prova.cs" />
     <Compile Remove="Migrations\20200504061304_prova.Designer.cs" />
+    <Compile Remove="Migrations\20200504145001_prova.cs" />
+    <Compile Remove="Migrations\20200504145001_prova.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

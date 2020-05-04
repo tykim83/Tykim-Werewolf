@@ -34,7 +34,8 @@ namespace Werewolf.Areas.Game.Controllers
             {
                 Character = _unitOfWork.GameUser.GetFirstOrDefault(filter: c => c.ApplicationUserId == claims.Value && c.GameId == gameId, includeProperties: "Game,ApplicationUser"),
                 Opponents = _unitOfWork.GameUser.GetAll(filter: c => c.ApplicationUserId != claims.Value && c.GameId == gameId, includeProperties: "ApplicationUser"),
-                Notes = notes
+                Notes = notes,
+                VoteList = _unitOfWork.GameUser.GetAll(filter: c => c.GameId == gameId && c.IsAlive == true, includeProperties: "ApplicationUser").Select(c => c.ApplicationUser)
             };
 
             return View(PlayVM);
