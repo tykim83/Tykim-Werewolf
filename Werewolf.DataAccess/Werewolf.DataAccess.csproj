@@ -7,6 +7,16 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200503171047_prova.cs" />
     <Compile Remove="Migrations\20200503171047_prova.Designer.cs" />
+    <Compile Remove="Migrations\20200503174849_AddIdToGameUserJoinTable.cs" />
+    <Compile Remove="Migrations\20200503174849_AddIdToGameUserJoinTable.Designer.cs" />
+    <Compile Remove="Migrations\20200503180343_AddGameUserNoteToDb.cs" />
+    <Compile Remove="Migrations\20200503180343_AddGameUserNoteToDb.Designer.cs" />
+    <Compile Remove="Migrations\20200503190137_AddUserNoteAndNoteToDb.cs" />
+    <Compile Remove="Migrations\20200503190137_AddUserNoteAndNoteToDb.Designer.cs" />
+    <Compile Remove="Migrations\20200503190442_prova.cs" />
+    <Compile Remove="Migrations\20200503190442_prova.Designer.cs" />
+    <Compile Remove="Migrations\20200504061304_prova.cs" />
+    <Compile Remove="Migrations\20200504061304_prova.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

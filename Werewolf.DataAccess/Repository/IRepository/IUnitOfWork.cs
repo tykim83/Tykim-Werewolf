@@ -9,6 +9,7 @@ namespace Werewolf.DataAccess.Repository.IRepository
         IGameRepository Game { get; }
         IGameUserRepository GameUser { get; }
         IApplicationUserRepository ApplicationUser { get; }
+        INoteRepository Note { get; }
 
         void Save();
     }

@@ -8,5 +8,6 @@ namespace Werewolf.Models.ViewModel
     {
         public GameUser Character { get; set; }
         public IEnumerable<GameUser> Opponents { get; set; }
+        public IEnumerable<Note> Notes { get; set; }
     }
 }

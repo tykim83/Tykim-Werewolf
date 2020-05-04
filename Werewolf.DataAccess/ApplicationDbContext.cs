@@ -17,6 +17,7 @@ namespace Werewolf.DataAccess
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<Game> Game { get; set; }
         public DbSet<GameUser> GameUser { get; set; }
+        public DbSet<Note> Note { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
