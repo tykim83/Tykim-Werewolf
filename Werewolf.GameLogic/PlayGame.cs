@@ -29,7 +29,7 @@ namespace Werewolf.GameLogic
 
             //Set game to Started and turn to 1
             gameFromDb.Status = SD.Started;
-            gameFromDb.Turn = SD.Night;
+            gameFromDb.TurnType = SD.Night;
             gameFromDb.TurnStarted = DateTime.Now;
             _unitOfWork.Save();
         }

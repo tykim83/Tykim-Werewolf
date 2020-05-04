@@ -23,7 +23,8 @@ namespace Werewolf.DataAccess.Repository
 
             objFromDb.Name = game.Name;
             objFromDb.Status = game.Status;
-            objFromDb.Turn = game.Turn;
+            objFromDb.TurnType = game.TurnType;
+            objFromDb.TurnNumber = game.TurnNumber;
             objFromDb.TurnStarted = game.TurnStarted;
             objFromDb.PlayerCount = game.PlayerCount;
 

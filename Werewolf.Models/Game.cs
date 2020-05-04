@@ -16,7 +16,8 @@ namespace Werewolf.Models
         [Required]
         public string Status { get; set; }
 
-        public string Turn { get; set; }
+        public string TurnType { get; set; }
+        public int TurnNumber { get; set; }
 
         [Required]
         public DateTime TurnStarted { get; set; }

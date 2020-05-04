@@ -18,7 +18,7 @@
         <div class="card-body">
             <p class="lead text-muted">Role: <strong class="text-info">@Model.Role</strong></p>
             <p class="lead text-muted">Status: <strong class="text-info">@(Model.IsAlive == true ? "Alive" : "Dead")</strong></p>
-            <p class="lead text-muted">Turn: <strong class="text-info">@Model.Game.Turn</strong></p>
+            <p class="lead text-muted">Turn: <strong class="text-info">@Model.Game.TurnType</strong></p>
         </div>
         <div class="card-footer">
             <a asp-area="Game" asp-controller="Play" asp-action="Index" asp-route-gameId="@Model.GameId" class="btn btn-outline-primary btn-block text-primary">Play</a>
