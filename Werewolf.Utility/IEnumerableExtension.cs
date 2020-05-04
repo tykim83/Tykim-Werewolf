@@ -8,7 +8,7 @@ namespace Werewolf.Utility
 {
     public static class IEnumerableExtension
     {
-        public static IEnumerable<SelectListItem> ToSelectListItems<T>(this IEnumerable<T> items, int selectedValue = 0)
+        public static IEnumerable<SelectListItem> ToSelectListItems<T>(this IEnumerable<T> items, string selectedValue = "")
         {
             return from item in items
                    select new SelectListItem

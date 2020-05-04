@@ -16,6 +16,11 @@ namespace Werewolf.Models
 
         public virtual Game Game { get; set; }
 
+        [ForeignKey("ApplicationUser")]
+        public string ApplicationUserId { get; set; }
+
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
         [ForeignKey("UserVoted")]
         public string UserVotedId { get; set; }
 

@@ -11,8 +11,9 @@ namespace Werewolf.Models.ViewModel
         public IEnumerable<Note> Notes { get; set; }
 
         //Vote section
-        public int VoteId { get; set; }
+        public Vote Vote { get; set; }
 
         public IEnumerable<ApplicationUser> VoteList { get; set; }
+        public IEnumerable<Vote> VoteCasted { get; set; }
     }
 }

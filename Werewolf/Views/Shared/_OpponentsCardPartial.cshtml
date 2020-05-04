@@ -5,6 +5,7 @@
 *@
 
 @{
+    //IMAGE
     string url, id;
 
     if (Model.CharacterRole == SD.Werewolf && Model.Opponent.Role == SD.Werewolf)
@@ -16,8 +17,22 @@
         url = "/img/Villager.png";
     }
 
+    //NOTE
     id = Model.Note == null ? id = "" : id = Model.Note.Id.ToString();
 
+    //VOTE COUNT
+    int count = 0;
+    if(Model.VoteCasted != null)
+    {
+        foreach (var vote in Model.VoteCasted)
+            {
+                if (vote.UserVotedId == Model.Opponent.ApplicationUserId)
+                    {
+                        count++;
+                    }
+            }
+    }
+    
 }
 
 <div class="card my-3">
@@ -31,7 +46,7 @@
     </div>
     <div class="card-body">
         <p class="lead text-muted">Status: <strong class="text-info">@(Model.Opponent.IsAlive == true ? "Alive" : "Dead")</strong></p>
-        <p class="lead text-muted">Vote Received: <strong class="text-info">(0)</strong></p>
+        <p class="lead text-muted">Vote Received: <strong class="text-info">(<span id="voteReceived-@Model.Opponent.ApplicationUserId">@count</span>)</strong></p>
         <p class="lead text-muted mb-1">Notes:</p>
         <textarea class="form-control note-text" data-gameid="@Model.Opponent.GameId" data-opponentId="@Model.Opponent.ApplicationUserId" asp-for="Note.Message" id="@id" rows="2"></textarea>
     </div>

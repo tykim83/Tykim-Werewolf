@@ -8,6 +8,7 @@ using Werewolf.DataAccess.Repository.IRepository;
 using Werewolf.GameLogic.Interfaces;
 using Werewolf.Models;
 using Werewolf.Models.ViewModel;
+using Werewolf.Utility;
 
 namespace Werewolf.Areas.Game.Controllers
 {
@@ -38,10 +39,36 @@ namespace Werewolf.Areas.Game.Controllers
                 VoteList = _unitOfWork.GameUser.GetAll(filter: c => c.GameId == gameId && c.IsAlive == true, includeProperties: "ApplicationUser").Select(c => c.ApplicationUser)
             };
 
+            //Get the already selected vote
+            PlayVM.Vote = _unitOfWork.Vote.GetFirstOrDefault(c => c.ApplicationUserId == claims.Value && c.Turn == PlayVM.Character.Game.TurnNumber);
+            //Get the list of already casted vote
+            if (PlayVM.Character.Game.TurnType == SD.Night)
+            {
+                if (PlayVM.Character.Role == SD.Werewolf)
+                {
+                    //Get the list only for WEREWOLF for NIGHT
+                    PlayVM.VoteCasted = _unitOfWork.Vote.GetAll(c => c.Role == SD.Werewolf && c.GameId == PlayVM.Character.GameId && c.Turn == PlayVM.Character.Game.TurnNumber);
+                }
+                else if (PlayVM.Character.Role == SD.Doctor)
+                {
+                    //Get the list only for DOCTOR for NIGHT
+                    PlayVM.VoteCasted = _unitOfWork.Vote.GetAll(c => c.Role == SD.Doctor && c.GameId == PlayVM.Character.GameId && c.Turn == PlayVM.Character.Game.TurnNumber);
+                }
+                else if (PlayVM.Character.Role == SD.Seer)
+                {
+                    //Get the list only for SEER for NIGHT
+                    PlayVM.VoteCasted = _unitOfWork.Vote.GetAll(c => c.Role == SD.Seer && c.GameId == PlayVM.Character.GameId && c.Turn == PlayVM.Character.Game.TurnNumber);
+                }
+            }
+            else if (PlayVM.Character.Game.TurnType == SD.Day)
+            {
+                //get list for everyone during the Day
+            }
+
             return View(PlayVM);
         }
 
-        #region ApiCalls
+        #region Note ApiCalls
 
         [HttpPost]
         public IActionResult AddNote(int gameId, string opponentId, string message)
@@ -80,6 +107,53 @@ namespace Werewolf.Areas.Game.Controllers
             return Json(new { success = true, message = "Saved successful." });
         }
 
-        #endregion ApiCalls
+        #endregion Note ApiCalls
+
+        #region Vote ApiCalls
+
+        [HttpPost]
+        public IActionResult AddVote(int gameId, string role, string userVoteId)
+        {
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var turn = _unitOfWork.Game.Get(gameId).TurnNumber;
+
+            var vote = new Vote()
+            {
+                GameId = gameId,
+                ApplicationUserId = claims.Value,
+                Role = role,
+                Turn = turn,
+                UserVotedId = userVoteId
+            };
+
+            _unitOfWork.Vote.Add(vote);
+            _unitOfWork.Save();
+
+            var voteFromDb = _unitOfWork.Vote.GetFirstOrDefault(c => c.GameId == gameId && c.ApplicationUserId == claims.Value && c.Turn == turn);
+            return Json(new { success = true, message = "Saved successful.", id = voteFromDb.Id });
+        }
+
+        [HttpPost]
+        public IActionResult UpdateVote(int id, string userVoteId)
+        {
+            var voteFromDb = _unitOfWork.Vote.GetFirstOrDefault(c => c.Id == id);
+
+            if (voteFromDb == null)
+            {
+                return Json(new { success = false, message = "Something went wrong" });
+            }
+
+
+            voteFromDb.UserVotedId = userVoteId;
+
+
+            _unitOfWork.Vote.Update(voteFromDb);
+
+            return Json(new { success = true, message = "Saved successful." });
+        }
+
+        #endregion Vote ApiCalls
     }
 }

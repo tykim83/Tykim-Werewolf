@@ -12,6 +12,5 @@ namespace Werewolf.Models
         public string Name { get; set; }
 
         public virtual ICollection<GameUser> GameUsers { get; set; }
-        public virtual ICollection<Vote> Votes { get; set; }
     }
 }
