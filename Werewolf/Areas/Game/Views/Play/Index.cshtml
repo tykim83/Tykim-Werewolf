@@ -3,12 +3,12 @@
     ViewData["Title"] = "Play";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@{ 
+@{
     //Pick the SELECTED OPTION
     var userVotedId = "";
     if (Model.Vote != null)
     {
-        if(Model.Vote.UserVotedId != null)
+        if (Model.Vote.UserVotedId != null)
         {
             userVotedId = Model.Vote.UserVotedId;
         }
@@ -17,7 +17,11 @@
 
 <div class="row">
     <div class="col-md-3">
+        <!--  PLAYER  SECTION  -->
         <partial name="_CharacterCardPartial" model="@Model.Character" />
+
+        <!--  NEXT TURN SECTION  -->
+        <a class="btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
     </div>
     <div class="col-md-9">
         <div class="row">
@@ -58,7 +62,14 @@
                     else if (Model.Character.Role == SD.Seer)
                     {
                         //SEER
-
+                        <div class="ml-auto h4 text-secondary align-self-center mb-0 text-right">
+                            Seer, pick someone to ask about.
+                        </div>
+                        <div class="ml-auto">
+                            <select data-gameid="@Model.Character.GameId" data-role="@Model.Character.Role" data-currentvoteuserid="@(Model.Vote == null ? string.Empty : Model.Vote.UserVotedId)" id="@(Model.Vote == null ? 0 : Model.Vote.Id)" asp-items="Model.VoteList.ToSelectListItems(userVotedId)" class="form-control form-control-lg">
+                                <option selected value="  "> -- select an option -- </option>
+                            </select>
+                        </div>
                     }
                 }
                 else

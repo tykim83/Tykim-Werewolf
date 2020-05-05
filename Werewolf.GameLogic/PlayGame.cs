@@ -20,6 +20,44 @@ namespace Werewolf.GameLogic
             _unitOfWork = unitOfWork;
         }
 
+        public bool CheckNextTurnReady(int gameId)
+        {
+            var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId, includeProperties: "Votes,Players");
+
+            //Check Alive Players
+            var alivePlayersCount = gameFromDb.Players.Where(c => c.IsAlive == true).Count();
+            var aliveWerewolf = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Werewolf).Count();
+            var aliveDoctor = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Doctor).Count();
+            var aliveSeer = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Seer).Count();
+
+            if (gameFromDb.TurnType == SD.Night)
+            {
+                //NIGHT TIME CHECK
+
+                var totalVoteRequired = aliveWerewolf + aliveDoctor + aliveSeer;
+                //GET ALL THE VOTES FOR THIS TURN EXCEPT NULL ONES
+                var notNullVotes = gameFromDb.Votes.Where(c => c.Turn == gameFromDb.TurnNumber && c.UserVotedId != null).ToList();
+                var werewolfsVote = notNullVotes.Where(c => c.Role == SD.Werewolf).ToList();
+
+                //CHECK EVERYONE VOTED AND CHECK WEREWOLF VOTED SAME PERSON
+                if (totalVoteRequired == notNullVotes.Count && werewolfsVote[0].UserVotedId == werewolfsVote[1].UserVotedId)
+                {
+                    //Works only with 2 werewolf
+                    gameFromDb.IsNextTurnReady = true;
+                    _unitOfWork.Save();
+                    return true;
+                }
+            }
+            else
+            {
+                //DAY TIME CHECK
+            }
+
+            gameFromDb.IsNextTurnReady = false;
+            _unitOfWork.Save();
+            return false;
+        }
+
         public void GameInit(int gameId)
         {
             //Assign Roles

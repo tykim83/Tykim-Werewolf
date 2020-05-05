@@ -7,5 +7,7 @@ namespace Werewolf.GameLogic.Interfaces
     public interface IPlayGame
     {
         void GameInit(int gameId);
+
+        bool CheckNextTurnReady(int gameId);
     }
 }

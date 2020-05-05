@@ -22,6 +22,8 @@ namespace Werewolf.Models
         [Required]
         public DateTime TurnStarted { get; set; }
 
+        public bool IsNextTurnReady { get; set; }
+
         [Required]
         [Display(Name = "Number of Players?")]
         [Range(7, 16,
@@ -29,5 +31,6 @@ namespace Werewolf.Models
         public int PlayerCount { get; set; }
 
         public virtual ICollection<Vote> Votes { get; set; }
+        public virtual ICollection<GameUser> Players { get; set; }
     }
 }

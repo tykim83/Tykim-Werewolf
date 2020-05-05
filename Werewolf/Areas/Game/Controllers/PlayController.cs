@@ -29,6 +29,9 @@ namespace Werewolf.Areas.Game.Controllers
             var claimsIdentity = (ClaimsIdentity)this.User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
+            //Check if next turn is ready
+            _playGame.CheckNextTurnReady(gameId);
+
             var notes = _unitOfWork.Note.GetAll(c => c.GameId == gameId && c.ApplicationUserId == claims.Value).ToList();
 
             PlayViewModel PlayVM = new PlayViewModel()
@@ -132,7 +135,7 @@ namespace Werewolf.Areas.Game.Controllers
             _unitOfWork.Save();
 
             var voteFromDb = _unitOfWork.Vote.GetFirstOrDefault(c => c.GameId == gameId && c.ApplicationUserId == claims.Value && c.Turn == turn);
-            return Json(new { success = true, message = "Saved successful.", id = voteFromDb.Id });
+            return Json(new { success = true, message = "Saved successful.", id = voteFromDb.Id, nextTurn = _playGame.CheckNextTurnReady(voteFromDb.GameId) });
         }
 
         [HttpPost]
@@ -145,13 +148,11 @@ namespace Werewolf.Areas.Game.Controllers
                 return Json(new { success = false, message = "Something went wrong" });
             }
 
-
             voteFromDb.UserVotedId = userVoteId;
-
 
             _unitOfWork.Vote.Update(voteFromDb);
 
-            return Json(new { success = true, message = "Saved successful." });
+            return Json(new { success = true, message = "Saved successful.", nextTurn = _playGame.CheckNextTurnReady(voteFromDb.GameId) });
         }
 
         #endregion Vote ApiCalls

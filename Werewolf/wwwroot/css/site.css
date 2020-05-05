@@ -70,10 +70,10 @@ body {
   line-height: 60px; /* Vertically center the text there */
 }
 
-#gameListTable a {
+#gameListTable a, #nextTurn {
     letter-spacing: 0.1em;
 }
 
-#gameListTable a:hover {
-    color: #fff !important;
-}
+    #gameListTable a:hover, #nextTurn:hover {
+        color: #fff !important;
+    }

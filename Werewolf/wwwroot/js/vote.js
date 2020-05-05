@@ -28,13 +28,16 @@
             type: "post",
             contentType: 'application/x-www-form-urlencoded',
             data: data,
-            success: function (result) {
+            success: function (data) {
 
-                if (result.success) {
-                    toastr.success(result.message);
+                if (data.success) {
+                    toastr.success(data.message);
+
+                    //Check if next turn 
+                    ToogleNextTurnBtn(data.nextTurn);
 
                     //Add new Id to the element DOM
-                    el.id = result.id;
+                    el.id = data.id;
 
                     //Add currentUserVoteId to the element Data
                     $(el).attr('data-currentvoteuserid', userVoteId);
@@ -42,11 +45,12 @@
                     //Add Vote to the DOM
                     AddVoteToDOM(userVoteId);
                 } else {
-                    toastr.error(result.message);
+                    toastr.error(data.message);
                 }
             }
         });
     };
+
 
     function UpdateVote(el, id, userVoteId) {
         var data = { id: id, userVoteId: userVoteId };
@@ -60,6 +64,9 @@
 
                 if (data.success) {
                     toastr.success(data.message);
+
+                    //Check if next turn 
+                    ToogleNextTurnBtn(data.nextTurn);
 
                     //Remove the previous vote
                     RemoveVoteFromDOM($(el).attr('data-currentvoteuserid'));
@@ -85,6 +92,20 @@
     function RemoveVoteFromDOM(vote) {
         var current = $('#voteReceived-' + vote).text();
         $('#voteReceived-' + vote).text(parseInt(current) - 1);
+    };
+
+
+    function ToogleNextTurnBtn(nextTurn) {
+        console.log(nextTurn);
+
+        if (nextTurn) {
+            $('.vote-btn').removeClass('disabled');
+            $('.vote-btn').text('Next Turn');
+        } else {
+            $('.vote-btn').addClass('disabled');
+            $('.vote-btn').text('...Waiting For Votes');  
+        }
+        
     };
 
 })();
