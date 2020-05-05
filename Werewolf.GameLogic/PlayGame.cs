@@ -74,12 +74,52 @@ namespace Werewolf.GameLogic
 
         public void NextTurn(int gameId)
         {
-            var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId, includeProperties: "Votes,Players");
-
+            var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId);
+            var votesFromDb = _unitOfWork.Vote.GetAll(c => c.GameId == gameId && c.Turn == gameFromDb.TurnNumber, includeProperties: "UserVoted");
             //Check for votes
             if (gameFromDb.TurnType == SD.Night)
             {
                 //NIGHT TURN
+                var votes = votesFromDb
+                    .GroupBy(c => c.Role)
+                    .Select(c => new
+                    {
+                        role = c.Key,
+                        votedId = c.Where(d => d.Role == c.Key).First().UserVotedId,
+                        votedName = c.Where(d => d.Role == c.Key).First().UserVoted.Name
+                    })
+                    .ToList();
+
+                //var id = votes.FirstOrDefault(c => c.role == SD.Doctor).votedId;
+                //var role = votes.FirstOrDefault(c => c.role == SD.Doctor).role;
+                //var name = votes.FirstOrDefault(c => c.role == SD.Doctor).votedName;
+
+                if (votes.FirstOrDefault(c => c.role == SD.Doctor).votedId == votes.FirstOrDefault(c => c.role == SD.Werewolf).votedId)
+                {
+                    //Doctor Saved player
+                    var log = new Log()
+                    {
+                        GameId = gameId,
+                        Turn = gameFromDb.TurnNumber,
+                        Message = votes.FirstOrDefault(c => c.role == SD.Doctor).votedName + " was saved by the Doctor"
+                    };
+
+                    _unitOfWork.Log.Add(log);
+                }
+                else
+                {
+                    //Werewolf killed player
+                    var log = new Log()
+                    {
+                        GameId = gameId,
+                        Turn = gameFromDb.TurnNumber,
+                        Message = votes.FirstOrDefault(c => c.role == SD.Werewolf).votedName + " was Killed"
+                    };
+
+                    _unitOfWork.Log.Add(log);
+
+                    KillPlayer(gameId, votes.FirstOrDefault(c => c.role == SD.Werewolf).votedId);
+                }
             }
             else
             {
@@ -90,6 +130,7 @@ namespace Werewolf.GameLogic
             gameFromDb.TurnNumber++;
             gameFromDb.TurnStarted = DateTime.Now;
             gameFromDb.TurnType = gameFromDb.TurnType == SD.Night ? SD.Day : SD.Night;
+            _unitOfWork.Save();
         }
 
         private void AssignRoles(int gameId)
@@ -127,6 +168,14 @@ namespace Werewolf.GameLogic
                 //Save Changes
                 _unitOfWork.GameUser.Update(gameUserFromDb);
             }
+        }
+
+        private void KillPlayer(int gameId, string playerId)
+        {
+            var gameUserFromDb = _unitOfWork.GameUser.GetFirstOrDefault(c => c.GameId == gameId && c.ApplicationUserId == playerId);
+
+            gameUserFromDb.IsAlive = false;
+            _unitOfWork.GameUser.Update(gameUserFromDb);
         }
     }
 }
