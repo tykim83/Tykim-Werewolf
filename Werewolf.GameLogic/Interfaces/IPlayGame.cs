@@ -9,5 +9,7 @@ namespace Werewolf.GameLogic.Interfaces
         void GameInit(int gameId);
 
         bool CheckNextTurnReady(int gameId);
+
+        void NextTurn(int gameId);
     }
 }

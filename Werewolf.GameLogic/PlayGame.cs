@@ -72,6 +72,26 @@ namespace Werewolf.GameLogic
             _unitOfWork.Save();
         }
 
+        public void NextTurn(int gameId)
+        {
+            var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId, includeProperties: "Votes,Players");
+
+            //Check for votes
+            if (gameFromDb.TurnType == SD.Night)
+            {
+                //NIGHT TURN
+            }
+            else
+            {
+                //DAY TURN
+            }
+
+            //Change Turn
+            gameFromDb.TurnNumber++;
+            gameFromDb.TurnStarted = DateTime.Now;
+            gameFromDb.TurnType = gameFromDb.TurnType == SD.Night ? SD.Day : SD.Night;
+        }
+
         private void AssignRoles(int gameId)
         {
             //Get list of users Id for the game

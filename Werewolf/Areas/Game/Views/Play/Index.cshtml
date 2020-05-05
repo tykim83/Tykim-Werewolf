@@ -16,13 +16,15 @@
 }
 
 <div class="row">
+
     <div class="col-md-3">
         <!--  PLAYER  SECTION  -->
         <partial name="_CharacterCardPartial" model="@Model.Character" />
 
         <!--  NEXT TURN SECTION  -->
-        <a class="btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
+        <a data-gameid="@Model.Character.GameId" class="btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
     </div>
+
     <div class="col-md-9">
         <div class="row">
             <!--  VOTE SECTION  -->
@@ -107,4 +109,6 @@
     <script src="~/js/note.js" asp-append-version="true"></script>
 
     <script src="~/js/vote.js" asp-append-version="true"></script>
+
+    <script src="~/js/nextTurn.js" asp-append-version="true"></script>
 }

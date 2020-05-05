@@ -32,5 +32,6 @@ namespace Werewolf.Models
 
         public virtual ICollection<Vote> Votes { get; set; }
         public virtual ICollection<GameUser> Players { get; set; }
+        public virtual ICollection<Log> Logs { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Werewolf.DataAccess.Repository.IRepository;
 using Werewolf.GameLogic.Interfaces;
 using Werewolf.Models;
@@ -156,5 +157,24 @@ namespace Werewolf.Areas.Game.Controllers
         }
 
         #endregion Vote ApiCalls
+
+        #region NextTurn ApiCalls
+
+        [HttpPost]
+        public IActionResult CheckNextTurn(int gameId)
+        {
+            var ready = _playGame.CheckNextTurnReady(gameId);
+            return Json(new { success = true, nextTurn = ready });
+        }
+
+        [HttpPost]
+        public IActionResult NextTurn(int gameId)
+        {
+            _playGame.NextTurn(gameId);
+            var redirectUrl = Url.Action(nameof(Index), new { gameId = gameId });
+            return Json(new { success = true, url = redirectUrl });
+        }
+
+        #endregion NextTurn ApiCalls
     }
 }

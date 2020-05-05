@@ -11,6 +11,7 @@ namespace Werewolf.DataAccess.Repository.IRepository
         IApplicationUserRepository ApplicationUser { get; }
         INoteRepository Note { get; }
         IVoteRepository Vote { get; }
+        ILogRepository Log { get; }
 
         void Save();
     }

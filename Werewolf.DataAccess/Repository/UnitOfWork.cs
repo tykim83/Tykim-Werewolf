@@ -17,6 +17,7 @@ namespace Werewolf.DataAccess.Repository
             ApplicationUser = new ApplicationUserRepository(_db);
             Note = new NoteRepository(_db);
             Vote = new VoteRepository(_db);
+            Log = new LogRepository(_db);
         }
 
         public IGameRepository Game { get; private set; }
@@ -27,6 +28,8 @@ namespace Werewolf.DataAccess.Repository
         public INoteRepository Note { get; private set; }
 
         public IVoteRepository Vote { get; private set; }
+
+        public ILogRepository Log { get; private set; }
 
         public void Dispose()
         {
