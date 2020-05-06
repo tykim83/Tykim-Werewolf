@@ -40,7 +40,7 @@ namespace Werewolf.GameLogic
                 var werewolfsVote = notNullVotes.Where(c => c.Role == SD.Werewolf).ToList();
 
                 //CHECK EVERYONE VOTED AND CHECK WEREWOLF VOTED SAME PERSON
-                if (totalVoteRequired == notNullVotes.Count && werewolfsVote[0].UserVotedId == werewolfsVote[1].UserVotedId)
+                if ((totalVoteRequired == notNullVotes.Count && werewolfsVote[0].UserVotedId == werewolfsVote[1].UserVotedId) || aliveWerewolf == 1)
                 {
                     //Works only with 2 werewolf
                     gameFromDb.IsNextTurnReady = true;
@@ -56,7 +56,7 @@ namespace Werewolf.GameLogic
                 //GET ALL THE VOTES FOR THIS TURN EXCEPT NULL ONES
                 var notNullVotes = gameFromDb.Votes.Where(c => c.Turn == gameFromDb.TurnNumber && c.UserVotedId != null).ToList().Count();
 
-                if (alivePlayersCount >= notNullVotes)
+                if (alivePlayersCount <= notNullVotes)
                 {
                     gameFromDb.IsNextTurnReady = true;
                     _unitOfWork.Save();
@@ -85,18 +85,20 @@ namespace Werewolf.GameLogic
 
         public void NextTurn(int gameId)
         {
-            var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId);
+            var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId, includeProperties: "Players");
             var votesFromDb = _unitOfWork.Vote.GetAll(c => c.GameId == gameId && c.Turn == gameFromDb.TurnNumber, includeProperties: "UserVoted");
-            //Check for votes
+
             if (gameFromDb.TurnType == SD.Night)
             {
                 //NIGHT TURN
+
+                //Check for votes
                 var votes = votesFromDb
                     .GroupBy(c => c.Role)
                     .Select(c => new
                     {
                         role = c.Key,
-                        votedId = c.Where(d => d.Role == c.Key).First().UserVotedId,
+                        votedId = c.Where(d => d.Role == c.Key).First().UserVoted.Id,
                         votedName = c.Where(d => d.Role == c.Key).First().UserVoted.Name
                     })
                     .ToList();
@@ -112,7 +114,8 @@ namespace Werewolf.GameLogic
                     {
                         GameId = gameId,
                         Turn = gameFromDb.TurnNumber,
-                        Message = votes.FirstOrDefault(c => c.role == SD.Doctor).votedName + " was saved by the Doctor"
+                        Message = votes.FirstOrDefault(c => c.role == SD.Doctor).votedName + " was saved by the Doctor",
+                        Visible = SD.Everyone
                     };
 
                     _unitOfWork.Log.Add(log);
@@ -135,12 +138,15 @@ namespace Werewolf.GameLogic
 
                 if (votes.FirstOrDefault(c => c.role == SD.Seer) != null)
                 {
+                    var id = votes.FirstOrDefault(c => c.role == SD.Seer).votedId;
+                    var role = gameFromDb.Players.Where(c => c.ApplicationUserId == id).FirstOrDefault().Role;
+                    var votedName = votes.FirstOrDefault(c => c.role == SD.Doctor).votedName;
                     //Add log for Seer
                     var seerLog = new Log()
                     {
                         GameId = gameId,
                         Turn = gameFromDb.TurnNumber,
-                        Message = votes.FirstOrDefault(c => c.role == SD.Seer).votedName + " is a " + votes.FirstOrDefault(c => c.role == SD.Seer).role,
+                        Message = votedName + " is a " + role,
                         Visible = SD.Seer
                     };
 
@@ -150,12 +156,58 @@ namespace Werewolf.GameLogic
             else
             {
                 //DAY TURN
+
+                //Check for votes
+                var votes = votesFromDb
+                    .GroupBy(c => c.UserVotedId)
+                    .Select(c => new
+                    {
+                        votedId = c.Key,
+                        votedName = c.Where(d => d.UserVotedId == c.Key).First().UserVoted.Name,
+                        count = c.Where(d => d.UserVotedId == c.Key).Count()
+                    })
+                    .OrderByDescending(c => c.count)
+                    .ToList();
+
+                //Check who got the most votes
+                int playerIndex;
+                if (votes.Count > 1)
+                {
+                    if (votes[0].count > votes[1].count)
+                    {
+                        playerIndex = 0;
+                    }
+                    else
+                    {
+                        Random rnd = new Random();
+                        playerIndex = rnd.Next(0, 1);
+                    }
+                }
+                else
+                {
+                    playerIndex = 0;
+                }
+
+                //Kill player
+                KillPlayer(gameId, votes[playerIndex].votedId);
+
+                //log
+                var log = new Log()
+                {
+                    GameId = gameId,
+                    Turn = gameFromDb.TurnNumber,
+                    Message = votes[playerIndex].votedName + " was Killed",
+                    Visible = SD.Everyone
+                };
+
+                _unitOfWork.Log.Add(log);
             }
 
             //Change Turn
             gameFromDb.TurnNumber++;
             gameFromDb.TurnStarted = DateTime.Now;
             gameFromDb.TurnType = gameFromDb.TurnType == SD.Night ? SD.Day : SD.Night;
+            gameFromDb.IsNextTurnReady = false;
             _unitOfWork.Save();
         }
 
