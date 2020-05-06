@@ -40,7 +40,7 @@ namespace Werewolf.GameLogic
                 var werewolfsVote = notNullVotes.Where(c => c.Role == SD.Werewolf).ToList();
 
                 //CHECK EVERYONE VOTED AND CHECK WEREWOLF VOTED SAME PERSON
-                if ((totalVoteRequired == notNullVotes.Count && werewolfsVote[0].UserVotedId == werewolfsVote[1].UserVotedId) || aliveWerewolf == 1)
+                if (aliveWerewolf == 1 || (totalVoteRequired == notNullVotes.Count && werewolfsVote[0].UserVotedId == werewolfsVote[1].UserVotedId))
                 {
                     //Works only with 2 werewolf
                     gameFromDb.IsNextTurnReady = true;
@@ -85,6 +85,12 @@ namespace Werewolf.GameLogic
 
         public void NextTurn(int gameId)
         {
+            var isGameEnded = CheckVictory(gameId);
+            if (isGameEnded)
+            {
+                return;
+            }
+
             var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId, includeProperties: "Players");
             var votesFromDb = _unitOfWork.Vote.GetAll(c => c.GameId == gameId && c.Turn == gameFromDb.TurnNumber, includeProperties: "UserVoted");
 
@@ -209,6 +215,8 @@ namespace Werewolf.GameLogic
             gameFromDb.TurnType = gameFromDb.TurnType == SD.Night ? SD.Day : SD.Night;
             gameFromDb.IsNextTurnReady = false;
             _unitOfWork.Save();
+
+            CheckVictory(gameId);
         }
 
         private void AssignRoles(int gameId)
@@ -254,6 +262,33 @@ namespace Werewolf.GameLogic
 
             gameUserFromDb.IsAlive = false;
             _unitOfWork.GameUser.Update(gameUserFromDb);
+        }
+
+        private bool CheckVictory(int gameId)
+        {
+            var aliveUserFromDb = _unitOfWork.GameUser.GetAll(c => c.GameId == gameId && c.IsAlive == true, includeProperties: "Game");
+            var aliveWerewolf = aliveUserFromDb.Where(c => c.Role == SD.Werewolf).ToList();
+            var aliveOthers = aliveUserFromDb.Where(c => c.Role != SD.Werewolf).ToList();
+            var gameFromDb = aliveUserFromDb.FirstOrDefault().Game;
+
+            if (aliveWerewolf.Count() <= 0)
+            {
+                //Villagers Win
+                gameFromDb.Status = SD.Finished;
+                gameFromDb.Winner = SD.Villager;
+                _unitOfWork.Game.Update(gameFromDb);
+                return true;
+            }
+            else if (aliveWerewolf.Count() <= aliveOthers.Count())
+            {
+                //Werewolf win
+                gameFromDb.Status = SD.Finished;
+                gameFromDb.Winner = SD.Werewolf;
+                _unitOfWork.Game.Update(gameFromDb);
+                return true;
+            }
+
+            return false;
         }
     }
 }

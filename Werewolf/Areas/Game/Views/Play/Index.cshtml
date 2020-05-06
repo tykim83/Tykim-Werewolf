@@ -28,8 +28,12 @@
         }
         <partial name="_CharacterCardPartial" model="@characterCardVM" />
 
-        <!--  NEXT TURN SECTION  -->
-        <a data-gameid="@Model.Character.GameId" class="mb-3 btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
+        @if (Model.Character.Game.Status != SD.Finished)
+        {
+            <!--  NEXT TURN SECTION  -->
+            <a data-gameid="@Model.Character.GameId" class="mb-3 btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
+
+        }
 
         <div class="card">
             <div class="card-header">
@@ -48,11 +52,15 @@
         <div class="row">
             <!--  VOTE SECTION  -->
             <div class="container d-flex">
-                <div class="h4 text-info mb-0 align-self-center">
-                    The @Model.Character.Game.TurnType
-                </div>
+                @if (Model.Character.Game.Status != SD.Finished)
+                {
+                    <div class="h4 text-info mb-0 align-self-center">
+                        The @Model.Character.Game.TurnType
+                    </div>
+                }
 
-                @if (Model.Character.Game.TurnType == SD.Night && Model.Character.IsAlive == true)
+
+                @if (Model.Character.Game.TurnType == SD.Night && Model.Character.IsAlive == true && Model.Character.Game.Status != SD.Finished)
                 {
                     //NIGHT
                     if (Model.Character.Role == SD.Werewolf)
@@ -93,7 +101,7 @@
                         </div>
                     }
                 }
-                else if (Model.Character.IsAlive == true)
+                else if (Model.Character.IsAlive == true && Model.Character.Game.Status != SD.Finished)
                 {
                     //DAY
                     <div class="ml-auto h4 text-secondary align-self-center mb-0 text-right">
@@ -103,6 +111,12 @@
                         <select data-gameid="@Model.Character.GameId" data-role="@Model.Character.Role" data-currentvoteuserid="@(Model.Vote == null ? string.Empty : Model.Vote.UserVotedId)" id="@(Model.Vote == null ? 0 : Model.Vote.Id)" asp-items="Model.VoteList.ToSelectListItems(userVotedId)" class="form-control form-control-lg">
                             <option selected value="  "> -- select an option -- </option>
                         </select>
+                    </div>
+                }
+                else if (Model.Character.Game.Status == SD.Finished)
+                {
+                    <div class="m-auto h4 text-secondary align-self-center mb-0 text-right text-danger">
+                        @Model.Character.Game.Winner &ensp; Won!
                     </div>
                 }
             </div>

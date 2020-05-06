@@ -8,7 +8,7 @@
     //IMAGE
     string url, id;
 
-    if (Model.CharacterRole == SD.Werewolf && Model.Opponent.Role == SD.Werewolf)
+    if ((Model.CharacterRole == SD.Werewolf && Model.Opponent.Role == SD.Werewolf) || Model.Opponent.Game.Status == SD.Finished)
     {
         url = "/img/" + Model.Opponent.Role + ".png";
     }

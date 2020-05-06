@@ -4,6 +4,8 @@
 *@
 @{
     var url = "/img/" + Model.Role + ".png";
+
+    var btn = Model.Game.Status == SD.Finished ? "Result" : "Play";
 }
 <div class="col-md-4 my-3" id="gameListTable">
     <div class="card">
@@ -18,10 +20,20 @@
         <div class="card-body">
             <p class="lead text-muted">Role: <strong class="text-info">@Model.Role</strong></p>
             <p class="lead text-muted">Status: <strong class="text-info">@(Model.IsAlive == true ? "Alive" : "Dead")</strong></p>
-            <p class="lead text-muted">Turn: <strong class="text-info">@Model.Game.TurnType</strong></p>
+            <p class="lead text-muted">
+                Game:
+                @if (Model.Game.Status == SD.Finished)
+                {
+                    <strong class="text-info">Ended</strong>
+                }
+                else
+                {
+                    <strong class="text-info">In Progress</strong>
+                }
+            </p>
         </div>
         <div class="card-footer">
-            <a asp-area="Game" asp-controller="Play" asp-action="Index" asp-route-gameId="@Model.GameId" class="btn btn-outline-primary btn-block text-primary">Play</a>
+            <a asp-area="Game" asp-controller="Play" asp-action="Index" asp-route-gameId="@Model.GameId" class="btn btn-outline-primary btn-block text-primary">@btn</a>
         </div>
     </div>
 </div>

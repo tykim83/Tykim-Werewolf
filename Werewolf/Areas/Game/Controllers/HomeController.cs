@@ -36,7 +36,7 @@ namespace Werewolf.Controllers
             if (claims != null)
             {
                 //Get list of Started and Finished games
-                var activeGames = _unitOfWork.GameUser.GetAll(filter: c => c.ApplicationUserId == claims.Value, includeProperties: "Game").Where(c => c.Game.Status == SD.Started || c.Game.Status == SD.Finished).ToList();
+                var activeGames = _unitOfWork.GameUser.GetAll(filter: c => c.ApplicationUserId == claims.Value, includeProperties: "Game", orderBy: c => c.OrderByDescending(d => d.Game.Status)).Where(c => c.Game.Status == SD.Started || c.Game.Status == SD.Finished).ToList();
 
                 return View(activeGames);
             }
