@@ -24,15 +24,15 @@ namespace Werewolf.GameLogic
         {
             var gameFromDb = _unitOfWork.Game.GetFirstOrDefault(filter: c => c.Id == gameId, includeProperties: "Votes,Players");
 
-            //Check Alive Players
-            var alivePlayersCount = gameFromDb.Players.Where(c => c.IsAlive == true).Count();
-            var aliveWerewolf = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Werewolf).Count();
-            var aliveDoctor = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Doctor).Count();
-            var aliveSeer = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Seer).Count();
-
             if (gameFromDb.TurnType == SD.Night)
             {
                 //NIGHT TIME CHECK
+
+                //Check Alive Players
+
+                var aliveWerewolf = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Werewolf).Count();
+                var aliveDoctor = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Doctor).Count();
+                var aliveSeer = gameFromDb.Players.Where(c => c.IsAlive == true && c.Role == SD.Seer).Count();
 
                 var totalVoteRequired = aliveWerewolf + aliveDoctor + aliveSeer;
                 //GET ALL THE VOTES FOR THIS TURN EXCEPT NULL ONES
@@ -51,6 +51,17 @@ namespace Werewolf.GameLogic
             else
             {
                 //DAY TIME CHECK
+                var alivePlayersCount = gameFromDb.Players.Where(c => c.IsAlive == true).Count();
+
+                //GET ALL THE VOTES FOR THIS TURN EXCEPT NULL ONES
+                var notNullVotes = gameFromDb.Votes.Where(c => c.Turn == gameFromDb.TurnNumber && c.UserVotedId != null).ToList().Count();
+
+                if (alivePlayersCount >= notNullVotes)
+                {
+                    gameFromDb.IsNextTurnReady = true;
+                    _unitOfWork.Save();
+                    return true;
+                }
             }
 
             gameFromDb.IsNextTurnReady = false;
@@ -119,6 +130,19 @@ namespace Werewolf.GameLogic
                     _unitOfWork.Log.Add(log);
 
                     KillPlayer(gameId, votes.FirstOrDefault(c => c.role == SD.Werewolf).votedId);
+                }
+
+                if (votes.FirstOrDefault(c => c.role == SD.Seer) != null)
+                {
+                    //Add log for Seer
+                    var seerLog = new Log()
+                    {
+                        GameId = gameId,
+                        Turn = gameFromDb.TurnNumber,
+                        Message = votes.FirstOrDefault(c => c.role == SD.Seer).votedName + " is a " + votes.FirstOrDefault(c => c.role == SD.Seer).role
+                    };
+
+                    _unitOfWork.Log.Add(seerLog);
                 }
             }
             else

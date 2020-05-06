@@ -19,7 +19,14 @@
 
     <div class="col-md-3">
         <!--  PLAYER  SECTION  -->
-        <partial name="_CharacterCardPartial" model="@Model.Character" />
+        @{
+            var characterCardVM = new CharacterCardViewModel()
+            {
+                Character = Model.Character,
+                VoteCasted = Model.VoteCasted
+            };
+        }
+        <partial name="_CharacterCardPartial" model="@characterCardVM" />
 
         <!--  NEXT TURN SECTION  -->
         <a data-gameid="@Model.Character.GameId" class="btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
@@ -33,7 +40,7 @@
                     The @Model.Character.Game.TurnType
                 </div>
 
-                @if (Model.Character.Game.TurnType == SD.Night)
+                @if (Model.Character.Game.TurnType == SD.Night && Model.Character.IsAlive == true)
                 {
                     //NIGHT
                     if (Model.Character.Role == SD.Werewolf)
@@ -74,9 +81,17 @@
                         </div>
                     }
                 }
-                else
+                else if (Model.Character.IsAlive == true)
                 {
                     //DAY
+                    <div class="ml-auto h4 text-secondary align-self-center mb-0 text-right">
+                        Villager, pick someone to kill.
+                    </div>
+                    <div class="ml-auto">
+                        <select data-gameid="@Model.Character.GameId" data-role="@Model.Character.Role" data-currentvoteuserid="@(Model.Vote == null ? string.Empty : Model.Vote.UserVotedId)" id="@(Model.Vote == null ? 0 : Model.Vote.Id)" asp-items="Model.VoteList.ToSelectListItems(userVotedId)" class="form-control form-control-lg">
+                            <option selected value="  "> -- select an option -- </option>
+                        </select>
+                    </div>
                 }
             </div>
         </div>

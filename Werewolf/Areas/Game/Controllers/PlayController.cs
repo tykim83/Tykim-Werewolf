@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 using Werewolf.DataAccess.Repository.IRepository;
 using Werewolf.GameLogic.Interfaces;
 using Werewolf.Models;
@@ -38,7 +39,7 @@ namespace Werewolf.Areas.Game.Controllers
             PlayViewModel PlayVM = new PlayViewModel()
             {
                 Character = _unitOfWork.GameUser.GetFirstOrDefault(filter: c => c.ApplicationUserId == claims.Value && c.GameId == gameId, includeProperties: "Game,ApplicationUser"),
-                Opponents = _unitOfWork.GameUser.GetAll(filter: c => c.ApplicationUserId != claims.Value && c.GameId == gameId, includeProperties: "ApplicationUser"),
+                Opponents = _unitOfWork.GameUser.GetAll(filter: c => c.ApplicationUserId != claims.Value && c.GameId == gameId, includeProperties: "ApplicationUser", orderBy: q => q.OrderByDescending(c => c.IsAlive)),
                 Notes = notes,
                 VoteList = _unitOfWork.GameUser.GetAll(filter: c => c.GameId == gameId && c.IsAlive == true, includeProperties: "ApplicationUser").Select(c => c.ApplicationUser)
             };
@@ -67,6 +68,7 @@ namespace Werewolf.Areas.Game.Controllers
             else if (PlayVM.Character.Game.TurnType == SD.Day)
             {
                 //get list for everyone during the Day
+                PlayVM.VoteCasted = _unitOfWork.Vote.GetAll(c => c.GameId == PlayVM.Character.GameId && c.Turn == PlayVM.Character.Game.TurnNumber);
             }
 
             return View(PlayVM);

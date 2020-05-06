@@ -49,7 +49,7 @@
 
         @{
             //SHOW THIS SECTION ONLY TO WEREWOLF DURING NIGHT TIME
-            if (Model.CharacterRole == SD.Werewolf || Model.Opponent.Game.TurnType == SD.Day)
+            if ((Model.CharacterRole == SD.Werewolf || Model.Opponent.Game.TurnType == SD.Day) && Model.Opponent.IsAlive == true)
             {
                 <p class="lead text-muted">Vote Received: <strong class="text-info">(<span id="voteReceived-@Model.Opponent.ApplicationUserId">@count</span>)</strong></p>
             }
