@@ -15,5 +15,6 @@ namespace Werewolf.Models.ViewModel
 
         public IEnumerable<ApplicationUser> VoteList { get; set; }
         public IEnumerable<Vote> VoteCasted { get; set; }
+        public IEnumerable<Log> Logs { get; set; }
     }
 }

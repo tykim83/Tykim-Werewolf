@@ -14,6 +14,7 @@ namespace Werewolf.Utility
         public const string Villager = "Villager";
         public const string Doctor = "Doctor";
         public const string Seer = "Seer";
+        public const string Everyone = "Everyone";
 
         public const string Day = "Day";
         public const string Night = "Night";

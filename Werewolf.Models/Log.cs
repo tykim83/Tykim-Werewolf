@@ -15,5 +15,6 @@ namespace Werewolf.Models
         public virtual Game Game { get; set; }
         public int Turn { get; set; }
         public string Message { get; set; }
+        public string Visible { get; set; }
     }
 }

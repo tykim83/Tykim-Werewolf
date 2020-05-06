@@ -124,7 +124,8 @@ namespace Werewolf.GameLogic
                     {
                         GameId = gameId,
                         Turn = gameFromDb.TurnNumber,
-                        Message = votes.FirstOrDefault(c => c.role == SD.Werewolf).votedName + " was Killed"
+                        Message = votes.FirstOrDefault(c => c.role == SD.Werewolf).votedName + " was Killed",
+                        Visible = SD.Everyone
                     };
 
                     _unitOfWork.Log.Add(log);
@@ -139,7 +140,8 @@ namespace Werewolf.GameLogic
                     {
                         GameId = gameId,
                         Turn = gameFromDb.TurnNumber,
-                        Message = votes.FirstOrDefault(c => c.role == SD.Seer).votedName + " is a " + votes.FirstOrDefault(c => c.role == SD.Seer).role
+                        Message = votes.FirstOrDefault(c => c.role == SD.Seer).votedName + " is a " + votes.FirstOrDefault(c => c.role == SD.Seer).role,
+                        Visible = SD.Seer
                     };
 
                     _unitOfWork.Log.Add(seerLog);

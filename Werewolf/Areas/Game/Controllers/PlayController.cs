@@ -44,6 +44,10 @@ namespace Werewolf.Areas.Game.Controllers
                 VoteList = _unitOfWork.GameUser.GetAll(filter: c => c.GameId == gameId && c.IsAlive == true, includeProperties: "ApplicationUser").Select(c => c.ApplicationUser)
             };
 
+            //Get the logs for the last turn
+            PlayVM.Logs = _unitOfWork.Log.GetAll(c => c.GameId == gameId && c.Turn == PlayVM.Character.Game.TurnNumber - 1 && (c.Visible == SD.Everyone || c.Visible == PlayVM.Character.Role)).ToList();
+            //PlayVM.Logs = logs.Where(c => c.Visible == SD.Everyone || c.Visible == PlayVM.Character.Role).ToList();
+
             //Get the already selected vote
             PlayVM.Vote = _unitOfWork.Vote.GetFirstOrDefault(c => c.ApplicationUserId == claims.Value && c.Turn == PlayVM.Character.Game.TurnNumber);
             //Get the list of already casted vote

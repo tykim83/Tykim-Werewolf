@@ -29,7 +29,19 @@
         <partial name="_CharacterCardPartial" model="@characterCardVM" />
 
         <!--  NEXT TURN SECTION  -->
-        <a data-gameid="@Model.Character.GameId" class="btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
+        <a data-gameid="@Model.Character.GameId" class="mb-3 btn btn-outline-danger btn-block btn-lg text-danger vote-btn @(Model.Character.Game.IsNextTurnReady == false ? "disabled" : "")" id="nextTurn" style="cursor: pointer;">@(Model.Character.Game.IsNextTurnReady == false ? "...Waiting For Votes" : "Next Turn")</a>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title h-4 text-center mb-0 text-info">Last Turn Events</div>
+            </div>
+            <div class="card-body">
+                @foreach (var log in Model.Logs)
+                {
+                    <div class="lead text-muted my-2">@log.Message</div>
+                }
+            </div>
+        </div>
     </div>
 
     <div class="col-md-9">
